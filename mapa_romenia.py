@@ -1,62 +1,76 @@
 # =============================================
 # DFS - Busca em Profundidade (Recursiva)
-# Exemplo: Mapa da Romênia
+# Exemplo: Mapa clássico da Romênia (AI Search)
 # =============================================
 
 def dfs(grafo, atual, destino, caminho=None, visitados=None):
 
-    # Inicializa estruturas na primeira chamada
+    # Inicializa estruturas
     if caminho is None:
         caminho = []
     if visitados is None:
         visitados = set()
 
-    # Marca a cidade atual
+    # Marca cidade atual
     caminho.append(atual)
     visitados.add(atual)
 
-    # Verifica se chegou ao destino
+    # Se chegou ao destino
     if atual == destino:
         return caminho
 
-    # Explora cada vizinho da cidade atual
+    # Explora vizinhos
     for vizinho in grafo.get(atual, []):
-
-        # Evita visitar cidades já exploradas
         if vizinho not in visitados:
 
             resultado = dfs(grafo, vizinho, destino, caminho, visitados)
 
-            # Se encontrou o destino, retorna o caminho
             if resultado:
                 return resultado
 
-    # Backtracking → volta para a cidade anterior
+    # Backtracking
     caminho.pop()
     return None
 
 
-# ====================== GRAFO ======================
+# ====================== GRAFO COMPLETO ======================
 
 grafo_romenia = {
-    "Oradea": ["Zerind", "Sibiu"],
+
+    "Arad": ["Zerind", "Sibiu", "Timisoara"],
     "Zerind": ["Arad", "Oradea"],
-    "Arad": ["Sibiu", "Timisoara"],
-    "Sibiu": ["Fagaras", "Rimnicu Vilcea"],
-    "Timisoara": ["Lugoj"],
-    "Lugoj": ["Mehadia"],
-    "Mehadia": ["Drobeta"],
-    "Drobeta": ["Craiova"],
-    "Craiova": ["Pitesti"],
-    "Pitesti": ["Bucharest"],
-    "Fagaras": ["Bucharest"],
-    "Rimnicu Vilcea": ["Pitesti"],
-    "Bucharest": []
+    "Oradea": ["Zerind", "Sibiu"],
+
+    "Sibiu": ["Arad", "Oradea", "Fagaras", "Rimnicu Vilcea"],
+
+    "Timisoara": ["Arad", "Lugoj"],
+    "Lugoj": ["Timisoara", "Mehadia"],
+    "Mehadia": ["Lugoj", "Drobeta"],
+    "Drobeta": ["Mehadia", "Craiova"],
+
+    "Craiova": ["Drobeta", "Rimnicu Vilcea", "Pitesti"],
+
+    "Rimnicu Vilcea": ["Sibiu", "Craiova", "Pitesti"],
+    "Fagaras": ["Sibiu", "Bucharest"],
+    "Pitesti": ["Rimnicu Vilcea", "Craiova", "Bucharest"],
+
+    "Bucharest": ["Fagaras", "Pitesti", "Giurgiu", "Urziceni"],
+
+    "Giurgiu": ["Bucharest"],
+
+    "Urziceni": ["Bucharest", "Vaslui", "Hirsova"],
+    "Hirsova": ["Urziceni", "Eforie"],
+    "Eforie": ["Hirsova"],
+
+    "Vaslui": ["Urziceni", "Iasi"],
+    "Iasi": ["Vaslui", "Neamt"],
+    "Neamt": ["Iasi"]
 }
 
 # ====================== EXECUÇÃO ======================
 
-caminho = dfs(grafo_romenia, "Oradea", "Bucharest")
+caminho = dfs(grafo_romenia, "Oradea", "Neamt")
 
 print("\nDFS - Mapa da Romênia")
-print("Caminho:", " → ".join(caminho))
+print("Caminho encontrado:", " → ".join(caminho))
+print("Número de cidades visitadas:", len(caminho))
